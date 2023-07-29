@@ -3,6 +3,9 @@ let index={
         $("#btn-save").on("click", ()=>{
           this.save();
          });
+         $("#btn-delete").on("click", ()=>{
+           this.deleteById();
+         });
     },
     save: function(){
         alert('board의 save함수 호출됨');
@@ -18,12 +21,24 @@ let index={
             dataType:"json"
         }).done(function(resp){
             alert("글쓰기가 완료되었습니다.");
-            alert(resp);
             location.href="/";
         }).fail(function(error){
             alert(JSON.stringify(error));
         });
     },
+    deleteById: function(){
+            var id=$("#id").text();
+            $.ajax({
+                type:"DELETE",
+                url:"/api/board/"+id,
+                dataType:"json"
+            }).done(function(resp){
+                alert("삭제가 완료되었습니다.");
+                location.href="/";
+            }).fail(function(error){
+                alert(JSON.stringify(error));
+            });
+        }
 }
 
 index.init();
