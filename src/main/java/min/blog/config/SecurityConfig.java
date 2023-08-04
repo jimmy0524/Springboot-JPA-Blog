@@ -24,7 +24,7 @@ public class SecurityConfig {
         return new BCryptPasswordEncoder();
     }
 
-    private void configure(AuthenticationManagerBuilder auth) throws Exception {
+    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(principalDetailService).passwordEncoder(encode());
     }
 

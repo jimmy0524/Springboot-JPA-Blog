@@ -1,5 +1,6 @@
 package min.blog.controller.api;
 
+import min.blog.Dto.ReplySaveRequestDto;
 import min.blog.Dto.ResponseDto;
 import min.blog.config.auth.PrincipalDetail;
 import min.blog.model.Board;
@@ -35,4 +36,17 @@ public class BoardApiController {
         return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
     }
 
+    @PostMapping("/api/board/{boardId}/reply")
+    public ResponseDto<Integer> replySave(@RequestBody ReplySaveRequestDto saveRequestDto) {
+        System.out.println("BoardApiController : replySave 호출됨");
+        boardService.댓글쓰기(saveRequestDto);
+        return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+    }
+
+    @DeleteMapping("/api/board/{boardId}/reply/{replyId}")
+    public ResponseDto<Integer> replyDelete(@PathVariable int replyId) {
+        System.out.println("BoardApiController : replyDelete 호출됨");
+        boardService.댓글삭제(replyId);
+        return new ResponseDto<Integer>(HttpStatus.OK.value(), 1);
+    }
 }

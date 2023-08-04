@@ -1,16 +1,15 @@
 package min.blog.service;
 
-import min.blog.config.auth.PrincipalDetail;
+import min.blog.Dto.ReplySaveRequestDto;
 import min.blog.model.Board;
-import min.blog.model.RoleType;
+import min.blog.model.Reply;
 import min.blog.model.User;
 import min.blog.repository.BoardRepository;
+import min.blog.repository.ReplyRepository;
 import min.blog.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -22,6 +21,11 @@ public class BoardService {
     @Autowired
     private BoardRepository boardRepository;
 
+    @Autowired
+    private ReplyRepository replyRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Transactional
     public void 글쓰기(Board board,  User user) {
@@ -56,5 +60,27 @@ public class BoardService {
                 });
         board.setTitle(requestBoard.getTitle());
         board.setContent(requestBoard.getContent());
+    }
+
+    @Transactional
+    public void 댓글쓰기(ReplySaveRequestDto replySaveRequestDto) {
+        Board board=boardRepository.findById(replySaveRequestDto.getBoardId())
+                .orElseThrow(()->{
+                    return new IllegalArgumentException("글 찾기 실패: 해당 글을 찾을 수 없습니다.");
+                });
+        User user=userRepository.findById(replySaveRequestDto.getUserId())
+                .orElseThrow(()->{
+                    return new IllegalArgumentException("글 찾기 실패: 댓글의 아이디를 찾을 수 없습니다.");
+                });
+        Reply reply=Reply.builder()
+                .user(user)
+                .board(board)
+                .content(replySaveRequestDto.getContent())
+                .build();
+        replyRepository.save(reply);
+    }
+    @Transactional
+    public void 댓글삭제(int id){
+        replyRepository.deleteById(id);
     }
 }
